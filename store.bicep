@@ -28,6 +28,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 resource mycontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
   name: '${storageAccountName}/default/${containerName}'
   dependsOn: [ storage]
+  
 }
 
 resource storageBlobDataOwnerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {

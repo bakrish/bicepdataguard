@@ -197,7 +197,7 @@ ${_primaryOraSid}_taf =
 TNSHERE
 
 echo "Testing TNS entries"
-export ORACLE_SID={_primaryOracleSid}
+export ORACLE_SID=${_primaryOracleSid}
 
 
 echo "Reloading the Listener" 
@@ -214,10 +214,34 @@ LSNREOF
 lsnrctl reload ${_oraLsnr} 
 
 echo startup force 
+export ORACLE_SID=${_primaryOraSid}
+echo Oracle SiD is ${ORACLE_SID}
 sqlplus / as sysdba << __SFEOF__
 prompt starting the database
 STARTUP FORCE
+prompt open database for readwrite
 alter database open;
+prompt verify force logging status
+select name, force_logging from v\$database;
+prompt verify archive log destination
+archive log list
+prompt verify standby file management
+show parameter STANDBY_FILE_MANAGEMENT
+prompt verify LOG_ARCHIVE_CONFIG
+show parameter LOG_ARCHIVE_CONFIG
+prompt verify flashback retention target
+show parameter DB_FLASHBACK_RETENTION_TARGET
+prompt verify database is open
+select name,open_mode from v\$database;
+prompt verify DG broker config files
+show parameter DG_BROKER_CONFIG_FILE1
+show parameter DG_BROKER_CONFIG_FILE2
+prompt verify DG broker started status
+show parameter DG_BROKER_START
+prompt verify protection mode
+select name,protection_mode from v\$database;
+prompt verify the DB role, failover mode, and flashback
+select name, database_role,fs_failover_mode,flashback_on from v\$database;
 exit success
 __SFEOF__
 
