@@ -1,12 +1,12 @@
-## An Oracle Data guard deployment developed in Bicep
+## An Oracle Data guard deployment developed in Azure Bicep templates
 
-This is a (partial) adaptation of the Oracle Data guard implementation avavilable here, converted into Bicep templates:
+This is a (partial) adaptation of the Oracle Data guard implementation avavilable here, converted into Bicep/Azure Resource Manager templates:
 https://github.com/Azure/Oracle-Workloads-for-Azure/tree/main/oradg 
 
 This template deploys the following resources:
 
-- Primary Oracle Database VM with a 64GB data disk
-- Secondary Oracle Database VM with a 64GB data disk
+- Primary Oracle Database VM with a data disk
+- Secondary Oracle Database VM with a data disk
 - Observer VM 
 - A storage account to copy oracle pwd file from Primary to Secondary
 
@@ -33,5 +33,8 @@ Sequence of operations:
     - Fast Start failover configuration 
     - Start of Observer component 
 
+How to deploy the template
+- At a minimum, the template requires a username for the Oracle VM amd ssh Public key. 
+- There are a few other parameters that can be customized, including VM size.
 
 
