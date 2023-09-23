@@ -1,6 +1,3 @@
-@description('Resource group name')
-param resourceGroupName string = resourceGroup().name
-
 @description('VM Name')
 param vmName string 
 

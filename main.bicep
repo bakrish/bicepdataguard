@@ -1,20 +1,17 @@
-@description('The name of you Virtual Machine.')
-param vmName string = 'oravm'
-
 @description('Username for the Virtual Machine.')
 param adminUsername string
 
 @description('SSH key for the Virtual Machine.')
 param sshKey string
 
-@description('Unique DNS Name for the Public IP used to access the Virtual Machine.')
-param dnsLabelPrefix string = toLower('${vmName}-${uniqueString(resourceGroup().id)}')
-
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
 @description('The size of the VM')
 param vmSize string = 'Standard_D4ds_v5'
+
+@description('The size of the Observer VM')
+param observerVMSize string = 'Standard_D2ds_v5'
 
 @description('Name of the VNET')
 param virtualNetworkName string = 'vNet'
@@ -25,12 +22,37 @@ param dbSubnetName string = 'Subnet'
 @description('Name of the Network Security Group')
 param networkSecurityGroupName string = 'SecGroupNet'
 
+@description('Primary Oracle SID')
+param primaryOracleSid string = 'oradb01'
+
+@description('Secondary Oracle SID')
+param secondaryOracleSid string = 'oradb02'
+
+@description('Primary VM name')
+param primaryVMName string = 'primary'
+
+@description('Secondary VM name')
+param secondaryVMName string = 'secondary'
+
+@description('Observer VM name')
+param observerVMName string = 'observer'
+
+@description('Oracle SYS password')
+@secure()
+param oracleSysPassword string
+
+@description('Oracle Mount directory')
+param oracleMountDirectory string = '/u02'
+
+@description('Storage account name')
+param storageAccountName string = 'shellst2209'
+
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
 
-var primaryvmscript = loadFileAsBase64('primary.sh')
-var secondaryvmscript = loadFileAsBase64('secondary.sh')
-var observervmscript = loadFileAsBase64('observer.sh')
+var primaryvmscript = loadTextContent('primary.sh')
+var secondaryvmscript = loadTextContent('secondary.sh')
+var observervmscript = loadTextContent('observer.sh')
 
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
@@ -79,13 +101,14 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
 module primary './oravm.bicep' = {
   name: 'primary'
   params: {
-    vmName: 'primary'
+    vmName: primaryVMName
     location: location
     adminUsername: adminUsername
     sshKey: sshKey
     subnetid: subnet.id
     networksecuritygroupid: networkSecurityGroup.id
     avZone: '1' 
+    vmSize: vmSize
   }
 }
 
@@ -93,26 +116,28 @@ module primary './oravm.bicep' = {
 module secondary './oravm.bicep' = {
   name: 'secondary'
   params: {
-    vmName: 'secondary'
+    vmName: secondaryVMName
     location: location
     adminUsername: adminUsername
     sshKey: sshKey
     subnetid: subnet.id
     networksecuritygroupid: networkSecurityGroup.id
     avZone: '2'     
+    vmSize: vmSize
   }
 }
 
 module observer './oravm.bicep' = {
   name: 'observer'
   params: {
-    vmName: 'observer'
+    vmName: observerVMName
     location: location
     adminUsername: adminUsername
     sshKey: sshKey
     subnetid: subnet.id
     networksecuritygroupid: networkSecurityGroup.id
     avZone: '2'     
+    vmSize: observerVMSize
   }
 }
 
@@ -121,13 +146,18 @@ module storage 'store.bicep' = {
   name: 'storage'
   dependsOn: [primary,secondary]
   params: {
-    storageAccountName: 'sharedstore1109'
+    storageAccountName: storageAccountName
     containerName: 'orashare'
     location: location
     primaryManagedIdentityId: primary.outputs.vmManagedidentity
     secondaryManagedIdentityId: secondary.outputs.vmManagedidentity
   }
 } 
+
+// Setup parameters to be passed to script
+var varFile = loadTextContent('variables.txt')
+var scriptVariables = replace(replace(replace(replace(replace(replace(replace(replace(varFile,'<primaryOracleSid>',primaryOracleSid), '<secondaryOracleSid>', secondaryOracleSid),'<primaryVMName>', primaryVMName),'<secondaryVMName>',secondaryVMName),'<observerVMName>',observerVMName),'<oracleSysPassword>',oracleSysPassword),'<oracleMountDirectory>',oracleMountDirectory),'<storageAccountName>',storageAccountName)
+
 
 //Configure Primary database VM, after all components are provisioned
 module vmonescript 'customscript.bicep' = {
@@ -137,7 +167,7 @@ module vmonescript 'customscript.bicep' = {
    scriptName: 'primary1'
    vmName: primary.name
    location: location
-   scriptContent: primaryvmscript
+   scriptContent: base64(replace(primaryvmscript,'#<insertVariables>',scriptVariables))
   }
 }
 
@@ -149,7 +179,7 @@ module vmtwoscript 'customscript.bicep' = {
    scriptName: 'secondary1'
    vmName: secondary.name
    location: location
-   scriptContent: secondaryvmscript
+   scriptContent: base64(replace(secondaryvmscript,'#<insertVariables>',scriptVariables))
   }
 }
 
@@ -161,7 +191,7 @@ module vmthreescript 'customscript.bicep' = {
    scriptName: 'observer1'
    vmName: observer.name
    location: location
-   scriptContent: observervmscript
+   scriptContent: base64(replace(observervmscript,'#<insertVariables>',scriptVariables))
   }
 }
 

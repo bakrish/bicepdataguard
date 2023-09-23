@@ -4,27 +4,8 @@
 sudo -E su - oracle <<"SUEOF"
 #!/bin/bash
 
-export _primaryOraSid="oradb01"
-export _stdbyOraSid="oradb02"
-export _oraHome="/u01/app/oracle/product/19.0.0/dbhome_1"
-export _oraInvDir="/u01/app/oraInventory"
-export _oraOsAcct="oracle"
-export _oraOsGroup="oinstall"
-export _oraCharSet="WE8ISO8859P15"
-export _oraMntDir="/u02"
-export _oraDataDir="${_oraMntDir}/oradata"
-export _oraFRADir="${_oraMntDir}/orarecv"
-export _oraSysPwd=oracleA1
-export _oraRedoSizeMB=500
-export _oraLsnr="LISTENER"
-export _oraLsnrPort=1521
-export _vmName1="primary"
-export _vmName2="secondary"
-export _vmName3="observer"
-export _vmNbr1="vm01"
-export _vmNbr2="vm02"
-export _vmNbr3="vm03"
-export _vmDomain="internal.cloudapp.net"
+#<insertVariables>
+
 export ORACLE_SID=${_primaryOraSid}
 export ORACLE_HOME=${_oraHome}
 export PATH=${_oraHome}/bin:${PATH}

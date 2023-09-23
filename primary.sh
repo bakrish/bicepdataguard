@@ -21,27 +21,8 @@ systemctl disable firewalld
 sudo su - oracle <<"SUEOF"
 #!/bin/bash
 
-export _primaryOraSid="oradb01"
-export _stdbyOraSid="oradb02"
-export _oraHome="/u01/app/oracle/product/19.0.0/dbhome_1"
-export _oraInvDir="/u01/app/oraInventory"
-export _oraOsAcct="oracle"
-export _oraOsGroup="oinstall"
-export _oraCharSet="WE8ISO8859P15"
-export _oraMntDir="/u02"
-export _oraDataDir="${_oraMntDir}/oradata"
-export _oraFRADir="${_oraMntDir}/orarecv"
-export _oraSysPwd=oracleA1
-export _oraRedoSizeMB=500
-export _oraLsnr="LISTENER"
-export _oraLsnrPort=1521
-export _vmName1="primary"
-export _vmName2="secondary"
-export _vmName3="observer"
-export _vmNbr1="vm01"
-export _vmNbr2="vm02"
-export _vmNbr3="vm03"
-export _vmDomain="internal.cloudapp.net"
+#<insertVariables>
+
 export ORACLE_SID=${_primaryOraSid}
 export ORACLE_HOME=${_oraHome}
 export PATH=${_oraHome}/bin:${PATH}
@@ -196,10 +177,6 @@ ${_primaryOraSid}_taf =
 
 TNSHERE
 
-echo "Testing TNS entries"
-export ORACLE_SID=${_primaryOracleSid}
-
-
 echo "Reloading the Listener" 
 cat >> ${_oraHome}/network/admin/listener.ora << LSNREOF
 SID_LIST_${_oraLsnr}=
@@ -250,7 +227,7 @@ cd /tmp
 wget "https://aka.ms/downloadazcopy-v10-linux"
 tar -xvf ./downloadazcopy-v10-linux
 export AZCOPY_AUTO_LOGIN_TYPE=MSI
-/tmp/azcopy_linux_amd64_10.20.1/azcopy cp "${_oraHome}/dbs/orapw${_primaryOraSid}" "https://sharedstore1109.blob.core.windows.net/orashare"
+/tmp/azcopy_linux_amd64_10.20.1/azcopy cp "${_oraHome}/dbs/orapw${_primaryOraSid}" "https://${_storageAccount}.blob.core.windows.net/orashare"
 
 echo completed file copy
 
