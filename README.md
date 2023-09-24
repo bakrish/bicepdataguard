@@ -34,7 +34,7 @@ Sequence of operations:
     - Start of Observer component 
 
 How to deploy the template
-- At a minimum, the template requires a username for the Oracle VM amd ssh Public key. 
+- At a minimum, the template requires a username for the Oracle VM , ssh Public key and sys Password for Oracle
 - There are a few other parameters that can be customized, including VM size.
 
 
