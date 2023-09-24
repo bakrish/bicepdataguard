@@ -26,7 +26,7 @@ Sequence of operations:
 - Secondary DB VM configuration (secondary.sh)
     - File system creation
     - Create Oracle duplicate DB through DBCA
-    - Modifying Oracle config files incouding tnsnames.ora and listener.ora
+    - Modifying Oracle config files including tnsnames.ora and listener.ora
     - Copy Ora pwd file from storage to secondary VM
 - Observer VM configuration (observer.sh)
     - Data Guard configuration
