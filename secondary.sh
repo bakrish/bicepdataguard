@@ -1,7 +1,11 @@
 #!/bin/bash
 # Script to configure secondary database VM
 
-
+echo '---------------------------------------------------------------------'
+echo 'Create the replica database, configure the DB, modify TNS entries    '
+echo '---------------------------------------------------------------------'
+echo 
+echo
 echo 'Creating file systems ...' 
 /usr/sbin/parted /dev/sdc mklabel gpt
 /usr/sbin/parted -a opt /dev/sdc mkpart primary xfs 0% 100%
@@ -152,3 +156,7 @@ export AZCOPY_AUTO_LOGIN_TYPE=MSI
 echo completed file copy
 
 SUEOF
+
+echo '---------------------------------------------------------------------'
+echo 'All complete.    '
+echo '---------------------------------------------------------------------'

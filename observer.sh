@@ -1,6 +1,10 @@
 #!/bin/bash
 # Script to configure observer database VM
-
+echo '---------------------------------------------------------------------'
+echo 'Configure Data guard replication settings, start the observer        '
+echo '---------------------------------------------------------------------'
+echo 
+echo
 sudo -E su - oracle <<"SUEOF"
 #!/bin/bash
 
@@ -111,3 +115,7 @@ nohup /home/oracle/observer_start.sh > /home/oracle/observer.log 2>/home/oracle/
 echo "Observer has been started."
 
 SUEOF
+
+echo '---------------------------------------------------------------------'
+echo 'All complete.    '
+echo '---------------------------------------------------------------------'

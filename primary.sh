@@ -1,7 +1,11 @@
 #!/bin/bash
 # Script to configure primary database VM
 
-
+echo '---------------------------------------------------------------------'
+echo 'Create the Oracle database, configure the DB, modify TNS entries     '
+echo '---------------------------------------------------------------------'
+echo 
+echo
 echo 'Creating file systems ...' 
 /usr/sbin/parted /dev/sdc mklabel gpt
 /usr/sbin/parted -a opt /dev/sdc mkpart primary xfs 0% 100%
@@ -233,4 +237,6 @@ echo completed file copy
 
 SUEOF
 
-echo "All complete." 
+echo '---------------------------------------------------------------------'
+echo 'All complete.    '
+echo '---------------------------------------------------------------------'
