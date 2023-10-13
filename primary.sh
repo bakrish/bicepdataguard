@@ -7,14 +7,17 @@ echo '---------------------------------------------------------------------'
 echo 
 echo
 echo 'Creating file systems ...' 
-/usr/sbin/parted /dev/sdc mklabel gpt
-/usr/sbin/parted -a opt /dev/sdc mkpart primary xfs 0% 100%
+export datadisk=`lsscsi | grep "^\[[0-9]:[0-9]:[0-9]:1.*" | awk -F' ' '{print $NF}'`
+export datadiskdevice=`echo "${datadisk}1"`
+export datadiskpattern=`echo ${datadisk} | cut -d'/' -f3`
+/usr/sbin/parted ${datadisk} mklabel gpt
+/usr/sbin/parted -a opt ${datadisk} mkpart primary xfs 0% 100%
 mkdir /u02 
-/usr/sbin/mkfs.xfs /dev/sdc1
-mount /dev/sdc1 /u02
+/usr/sbin/mkfs.xfs ${datadiskdevice}
+mount ${datadiskdevice} /u02
 mkdir /u02/oradata /u02/orarecv 
 chown oracle:oinstall /u02 -R
-diskuuid=`ls  -l /dev/disk/by-uuid | grep sdc1 |  awk '{i=NF-2;print $i}'`
+diskuuid=`ls  -l /dev/disk/by-uuid | grep ${datadiskpattern} |  awk '{i=NF-2;print $i}'`
 mntopts=`sudo mount | grep u02 | awk '{print $NF}' | sed 's/(//' | sed 's/)//'`
 echo UUID=$diskuuid /u02 xfs $mntopts 0 0 >> /etc/fstab
 echo 'Finished creating file systems' 

@@ -96,17 +96,19 @@ host sleep 10
 __EOF__
 
 echo Create a script to launch the observer
-cat >> /home/oracle/observer_start.sh << STEOF
-#!/bin/bash
-# This script is used to start the Observer in the background.
+cat >> /home/oracle/observer_start.sh << _CAT_
+  #!/bin/bash
+  # This script is used to start the Observer in the background.
 
-export ORACLE_SID=${_primaryOraSid}
-dgmgrl << STEOF
-connect sys/${_oraSysPwd}@${_primaryOraSid}_dgmgrl 
-show configuration
-show fast_start failover
-start observer
+  export ORACLE_SID=${_primaryOraSid}
+  dgmgrl << STEOF
+    connect sys/${_oraSysPwd}@${_primaryOraSid}_dgmgrl 
+    show configuration
+    show fast_start failover
+    start observer
 STEOF
+
+_CAT_
 
 echo Run the observer script in background
 chmod +x /home/oracle/observer_start.sh

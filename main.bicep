@@ -45,7 +45,7 @@ param oracleSysPassword string
 param oracleMountDirectory string = '/u02'
 
 @description('Storage account name')
-param storageAccountName string = 'shellst2209'
+param storageAccountName string = 'shellst1310'
 
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
