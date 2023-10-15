@@ -53,6 +53,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   location: location
   
   properties: {
+    enableAcceleratedNetworking: true
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -105,7 +106,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     storageProfile: {
       dataDisks: [
         {
-          caching: 'ReadOnly'
+          caching: 'None'
           createOption: 'Empty'
           deleteOption: 'Delete'
           diskSizeGB: 128

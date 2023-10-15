@@ -170,15 +170,14 @@ ${_primaryOraSid}_taf =
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName1}.${_vmDomain})(PORT = 1521))
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName2}.${_vmDomain})(PORT = 1521))
     )
-    (CONNECT_DATA =
-      (SERVER = DEDICATED)
+    (CONNECT_DATA = 
       (SERVICE_NAME = PRIMARY)
-    )
-    (FAILOVER_MODE =
-      (TYPE = SELECT)
-      (METHOD = BASIC)
-      (RETRIES = 300)
-      (DELAY = 1)
+      (FAILOVER_MODE =
+        (TYPE = SELECT)
+        (METHOD = BASIC)
+        (RETRIES = 300)
+        (DELAY = 1)
+      )
     )
   )
 
@@ -228,15 +227,6 @@ prompt verify the DB role, failover mode, and flashback
 select name, database_role,fs_failover_mode,flashback_on from v\$database;
 exit success
 __SFEOF__
-
-echo copy orapw file from primary to secondary
-cd /tmp
-wget "https://aka.ms/downloadazcopy-v10-linux"
-tar -xvf ./downloadazcopy-v10-linux
-export AZCOPY_AUTO_LOGIN_TYPE=MSI
-/tmp/azcopy_linux_amd64_10.20.1/azcopy cp "${_oraHome}/dbs/orapw${_primaryOraSid}" "https://${_storageAccount}.blob.core.windows.net/orashare"
-
-echo completed file copy
 
 SUEOF
 

@@ -61,15 +61,14 @@ ${_primaryOraSid}_taf =
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName1}.${_vmDomain})(PORT = 1521))
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName2}.${_vmDomain})(PORT = 1521))
     )
-    (CONNECT_DATA =
-      (SERVER = DEDICATED)
+    (CONNECT_DATA = 
       (SERVICE_NAME = PRIMARY)
-    )
-    (FAILOVER_MODE =
-      (TYPE = SELECT)
-      (METHOD = BASIC)
-      (RETRIES = 300)
-      (DELAY = 1)
+      (FAILOVER_MODE =
+        (TYPE = SELECT)
+        (METHOD = BASIC)
+        (RETRIES = 300)
+        (DELAY = 1)
+      )
     )
   )
 

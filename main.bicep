@@ -44,9 +44,6 @@ param oracleSysPassword string
 @description('Oracle Mount directory')
 param oracleMountDirectory string = '/u02'
 
-@description('Storage account name')
-param storageAccountName string = 'shellst1310'
-
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
 
@@ -141,28 +138,15 @@ module observer './oravm.bicep' = {
   }
 }
 
-// A storage location to copy oratab from Primary to secondary 
-module storage 'store.bicep' = {
-  name: 'storage'
-  dependsOn: [primary,secondary]
-  params: {
-    storageAccountName: storageAccountName
-    containerName: 'orashare'
-    location: location
-    primaryManagedIdentityId: primary.outputs.vmManagedidentity
-    secondaryManagedIdentityId: secondary.outputs.vmManagedidentity
-  }
-} 
-
 // Setup parameters to be passed to script
 var varFile = loadTextContent('variables.txt')
-var scriptVariables = replace(replace(replace(replace(replace(replace(replace(replace(varFile,'<primaryOracleSid>',primaryOracleSid), '<secondaryOracleSid>', secondaryOracleSid),'<primaryVMName>', primaryVMName),'<secondaryVMName>',secondaryVMName),'<observerVMName>',observerVMName),'<oracleSysPassword>',oracleSysPassword),'<oracleMountDirectory>',oracleMountDirectory),'<storageAccountName>',storageAccountName)
+var scriptVariables = replace(replace(replace(replace(replace(replace(replace(varFile,'<primaryOracleSid>',primaryOracleSid), '<secondaryOracleSid>', secondaryOracleSid),'<primaryVMName>', primaryVMName),'<secondaryVMName>',secondaryVMName),'<observerVMName>',observerVMName),'<oracleSysPassword>',oracleSysPassword),'<oracleMountDirectory>',oracleMountDirectory)
 
 
 //Configure Primary database VM, after all components are provisioned
 module vmonescript 'customscript.bicep' = {
   name: 'vmonescript'
-  dependsOn: [storage]
+   dependsOn: [primary,secondary,observer]
   params: {
    scriptName: 'primary1'
    vmName: primary.name

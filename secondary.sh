@@ -104,15 +104,14 @@ ${_primaryOraSid}_taf =
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName1}.${_vmDomain})(PORT = 1521))
       (ADDRESS = (PROTOCOL = TCP)(HOST = ${_vmName2}.${_vmDomain})(PORT = 1521))
     )
-    (CONNECT_DATA =
-      (SERVER = DEDICATED)
+    (CONNECT_DATA = 
       (SERVICE_NAME = PRIMARY)
-    )
-    (FAILOVER_MODE =
-      (TYPE = SELECT)
-      (METHOD = BASIC)
-      (RETRIES = 300)
-      (DELAY = 1)
+      (FAILOVER_MODE =
+        (TYPE = SELECT)
+        (METHOD = BASIC)
+        (RETRIES = 300)
+        (DELAY = 1)
+      )
     )
   )
 
@@ -149,14 +148,6 @@ ALTER DATABASE SET STANDBY DATABASE TO MAXIMIZE AVAILABILITY;
 ALTER DATABASE FLASHBACK ON;
 
 __EOF__
-
-echo copy orapw file from vm1 to vm2  
-cd /tmp
-wget "https://aka.ms/downloadazcopy-v10-linux"
-tar -xvf ./downloadazcopy-v10-linux
-export AZCOPY_AUTO_LOGIN_TYPE=MSI
-/tmp/azcopy_linux_amd64_10.20.1/azcopy cp https://${_storageAccount}.blob.core.windows.net/orashare/orapw${_primaryOraSid} "${_oraHome}/dbs/orapw${_primaryOraSid}"
-echo completed file copy
 
 SUEOF
 
