@@ -21,7 +21,6 @@ Sequence of operations:
     - Oracle DB creation and configuration
     - Modifying Oracle config files incouding tnsnames.ora and listener.ora
     - Disable VM firewall (such that replication can happen between primary and secondary)
-    - Copy Ora pwd file to storage
 - Secondary DB VM configuration (secondary.sh)
     - File system creation
     - Create Oracle duplicate DB through DBCA
