@@ -8,7 +8,6 @@ This template deploys the following resources:
 - Primary Oracle Database VM with a data disk
 - Secondary Oracle Database VM with a data disk
 - Observer VM 
-- A storage account to copy oracle pwd file from Primary to Secondary
 
 Bicep Modules:
 - Main.bicep : this is the driver script for deploying resources
@@ -27,7 +26,6 @@ Sequence of operations:
     - File system creation
     - Create Oracle duplicate DB through DBCA
     - Modifying Oracle config files including tnsnames.ora and listener.ora
-    - Copy Ora pwd file from storage to secondary VM
 - Observer VM configuration (observer.sh)
     - Data Guard configuration
     - Fast Start failover configuration 
